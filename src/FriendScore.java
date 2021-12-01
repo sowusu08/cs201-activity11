@@ -1,9 +1,10 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class FriendScore {
-    public static void /*int*/ highestScore(String[] friends) {
+    public /*static void*/ int highestScore(String[] friends) {
         // make a list of each person's friends
         // for each numbered friend store count = length of the list
         // search every other list for that number
@@ -49,42 +50,64 @@ public class FriendScore {
 
         // loop through each element in map
         // where each element is a person's profile
-        int count = 0;
+        HashSet<Integer> totalFriends = new HashSet<>();
         for(Integer key1 : friendsMap.keySet()){
-            System.out.println("Person: "+key1+" Friends: "+friendsMap.get(key1));
-            // add to the person's friend count the number of immediate friends they have
+            //System.out.println("Person: "+key1+" Friends: "+friendsMap.get(key1));
+            // add to the person's totalFriends set their immediate friends
             // the length of their immediate friends list in friendsMap
-            count+=friendsMap.get(key1).size();
+            totalFriends.addAll(friendsMap.get(key1));
+            //count+=friendsMap.get(key1).size();
             //System.out.println(count);
 
             // then loop through the other keys in friendsMap.keySet
             for(Integer key2 : friendsMap.keySet()){
                 // if any other friends list contains key 1
                 if(friendsMap.get(key2).contains(key1)){
-                    // get the elements in this list that don't occur in the first list
+                    // get the elements in this list
+                    // this will include the person whose friends we're finding (aka key1)
                     ArrayList<Integer> newFriends = friendsMap.get(key2);
-                    newFriends.removeAll(friendsMap.get(key1));
+                    // add these to "totalFriends" set (only adds unique friends)
+                    totalFriends.addAll(newFriends);
+                    //newFriends.removeAll(friendsMap.get(key1));
                     // and add the length of this minus one to count
-                    count += newFriends.size() - 1;
+                    //count += newFriends.size() - 1;
                 }
             }
 
-            // add count to counts array list
-            if(count != 0){counts[key1] = count;}
+            // add size of totalFriends - 1 (excluding the person themselves) to array list
+            //if(count != 0){counts[key1] = count;}
             // then reset count
-            count = 0;
+            if(totalFriends.size() != 0){
+                counts[key1] = totalFriends.size() - 1;
+            // the reset total friends
+                totalFriends = new HashSet<>();
+            }
         }
 
         // sort count array list by increasing size of number (last element is largest)
         Arrays.sort(counts);
         // return last number of Array (largest number)
-        //return counts[counts.length-1];
-        System.out.println("Counts: "+Arrays.toString(counts));        // last number should be answer
+        return counts[counts.length-1];
+        //System.out.println("Counts: "+Arrays.toString(counts));        // last number should be answer
         //System.out.println("Counts: "+counts[counts.length-1]);
     }
 
-    public static void main(String[] args) {
-        String[] test ={"NNYYNYN", "NNYYNNN", "YYNYYYY", "YYYNNYY", "NNYNNYN", "YNYYYNN", "NNYYNNN"};
+    /*public static void main(String[] args) {
+        String[] test ={"NNNNNNNNNNNNNNY",
+                "NNNNNNNNNNNNNNN",
+                "NNNNNNNYNNNNNNN",
+                "NNNNNNNYNNNNNNY",
+                "NNNNNNNNNNNNNNY",
+                "NNNNNNNNYNNNNNN",
+                "NNNNNNNNNNNNNNN",
+                "NNYYNNNNNNNNNNN",
+                "NNNNNYNNNNNYNNN",
+                "NNNNNNNNNNNNNNY",
+                "NNNNNNNNNNNNNNN",
+                "NNNNNNNNYNNNNNN",
+                "NNNNNNNNNNNNNNN",
+                "NNNNNNNNNNNNNNN",
+                "YNNYYNNNNYNNNNN"};
         highestScore(test);
-    }
+    }*/
 }
